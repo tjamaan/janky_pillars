@@ -1,18 +1,27 @@
 use bevy::prelude::*;
 
-use crate::{despawn_non_persistent, GameAssets, GameState};
+use crate::{despawn_non_persistent, GameAssets, GameState, NonPersistent};
 
 pub struct TitlePlugin;
 
 impl Plugin for TitlePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems((
+            // on enter
             setup.in_schedule(OnEnter(GameState::Title)),
+            // on exit
             teardown.in_schedule(OnExit(GameState::Title)),
-            despawn_non_persistent.after(teardown),
+            despawn_non_persistent
+                .in_schedule(OnExit(GameState::Title))
+                .after(teardown),
+            // on update
+            handle_play_button,
         ));
     }
 }
+
+#[derive(Component)]
+struct PlayButton;
 
 fn setup(mut commands: Commands, game_assets: Res<GameAssets>) {
     println!("<tj> Title: Setup");
@@ -24,6 +33,7 @@ fn setup(mut commands: Commands, game_assets: Res<GameAssets>) {
             },
             ..default()
         })
+        .insert(NonPersistent)
         .with_children(|root| {
             root.spawn(TextBundle::from_section(
                 "Janky Pillars",
@@ -38,6 +48,7 @@ fn setup(mut commands: Commands, game_assets: Res<GameAssets>) {
                 background_color: Color::CRIMSON.into(),
                 ..default()
             })
+            .insert(PlayButton)
             .with_children(|button| {
                 button.spawn(TextBundle::from_section(
                     "Play",
@@ -53,4 +64,20 @@ fn setup(mut commands: Commands, game_assets: Res<GameAssets>) {
 
 fn teardown() {
     println!("<tj> Title: Teardown");
+}
+
+fn handle_play_button(
+    q: Query<&Interaction, (With<PlayButton>, Changed<Interaction>)>,
+    mut next_state: ResMut<NextState<GameState>>,
+) {
+    for interaction in &q {
+        match interaction {
+            Interaction::Clicked => {
+                println!("<tj> Play button clicked, changing state");
+                next_state.set(GameState::Gameplay);
+            }
+            Interaction::Hovered => (),
+            Interaction::None => (),
+        }
+    }
 }

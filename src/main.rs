@@ -46,11 +46,11 @@ fn setup_cameras(mut commands: Commands) {
 }
 
 #[derive(Component)]
-struct Persistent;
+struct NonPersistent;
 
 fn despawn_non_persistent(
     mut commands: Commands,
-    q: Query<Entity, (Without<Persistent>, Without<Parent>)>,
+    q: Query<Entity, (With<NonPersistent>, Without<Parent>)>,
 ) {
     println!("<tj> Destroy non persistent");
     q.for_each(|entity| commands.entity(entity).despawn_recursive());
