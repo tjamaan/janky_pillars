@@ -1,6 +1,8 @@
 use bevy::prelude::*;
 mod title_plugin;
 use title_plugin::TitlePlugin;
+mod gameplay_plugin;
+use gameplay_plugin::GameplayPlugin;
 
 fn main() {
     App::new()
@@ -17,6 +19,7 @@ fn main() {
         .add_startup_system(load_assets)
         .add_startup_system(setup_cameras)
         .add_plugin(TitlePlugin)
+        .add_plugin(GameplayPlugin)
         .run();
 }
 
