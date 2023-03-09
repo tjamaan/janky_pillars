@@ -15,7 +15,7 @@ impl Plugin for TitlePlugin {
                 .in_schedule(OnExit(GameState::Title))
                 .after(teardown),
             // on update
-            handle_play_button,
+            handle_play_button.in_set(OnUpdate(GameState::Title)),
         ));
     }
 }

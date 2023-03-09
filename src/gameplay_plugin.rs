@@ -100,7 +100,6 @@ fn setup(mut commands: Commands) {
                         )),
                         ..default()
                     },
-                    transform: Transform::from_translation(Vec3::new(0., 0., 1.)),
                     ..default()
                 })
                 .id();
