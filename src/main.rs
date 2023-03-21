@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 mod title_plugin;
+mod util;
 use title_plugin::TitlePlugin;
 mod gameplay_plugin;
 use gameplay_plugin::GameplayPlugin;
@@ -48,7 +49,10 @@ fn load_assets(asset_server: Res<AssetServer>, mut game_assets: ResMut<GameAsset
 
 fn setup_cameras(mut commands: Commands) {
     println!("<tj> Setup camera");
-    commands.spawn(Camera2dBundle::default());
+    commands.spawn(Camera2dBundle {
+        transform: Transform::from_translation(Vec3::new(0., 0., 500. - 0.1)),
+        ..default()
+    });
 }
 
 #[derive(Component)]
